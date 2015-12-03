@@ -1,0 +1,40 @@
+Name: oracle
+Cartridge-Short-Name: ORACLE
+Architecture: noarch
+Display-Name: Oracle Database
+Description: This Cartridge provides the ability to create a instance on a external Oracle Database
+Version: '1.0'
+Versions:
+- '1.0'
+Cartridge-Version: 1.0.0
+Compatible-Versions: []
+Cartridge-Vendor: frb
+Categories:
+- service
+- database
+- embedded
+Website: https://www.oracle.com/database/index.html
+Help-Topics:
+  Oracle DBA: https://www.oracle.com/database/roles/database-administrator.html
+Cart-Data:
+- Key: username
+  Type: cart_data
+  Description: User to be used to connect to Oracle DB
+- Key: password
+  Type: cart_data
+  Description: Credentials to be used to connect to Oracle DB
+- Key: database_name
+  Type: cart_data
+  Description: Oracle DB Name
+- Key: connection_url
+  Type: cart_data
+  Description: Oracle DB connection URL
+Provides:
+- oracle
+- oracledb
+Publishes:
+  publish-db-connection-info:
+    Type: ENV:NET_TCP:db:connection-info
+Scaling:
+  Min: 1
+  Max: 1

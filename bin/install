@@ -1,0 +1,91 @@
+#!/bin/bash -ue
+echo ''
+echo '######################################################################'
+echo '# INSTALL                                                            #'
+echo '######################################################################'
+echo ''
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+#OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR="::"
+#OPENSHIFT_ORACLE_DB_SCRIPT_HOST="10.3.10.32"
+#OPENSHIFT_ORACLE_DB_SCRIPT_USER="remotetest"
+#OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD=$(echo "password123" |  base64)
+#OPENSHIFT_ORACLE_DB_SCRIPT_LOC="/bashtest.sh"
+#OPENSHIFT_APP_NAME="test"
+
+db_host=""
+db_port=""
+db_username=""
+db_password=""
+db_socket=""
+db_url=""
+
+client_message="Running the remove Oracle Provisioning Script via SSH"
+client_message="    sshpass -p [PASSWORD-REDACTED] ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST '/bin/bash '$OPENSHIFT_ORACLE_DB_SCRIPT_LOC"
+
+script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST '/bin/bash '$OPENSHIFT_ORACLE_DB_SCRIPT_LOC)
+
+result_array=($(echo $script_result | awk 'BEGIN {FS="'$OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR'"} {for(i=1;i<=NF;i++)print $i}'))
+
+result_array_length=${#result_array[@]}
+
+if [ $result_array_length -eq 6 ]; then
+    db_host=${result_array[0]}
+    db_port=${result_array[1]}
+    db_username=${result_array[2]}
+    db_password=${result_array[3]}
+    db_socket=${result_array[4]}
+    db_url=${result_array[5]}
+else
+    echo ""
+    echo "Unable to add Oracle cartridge to your application because"
+    echo "the remote script $OPENSHIFT_ORACLE_DB_SCRIPT_HOST:$OPENSHIFT_ORACLE_DB_SCRIPT_LOC returned"
+    echo "an unexpected result"
+    echo ""
+    client_error ""
+    client_error "Unable to add Oracle cartridge to your application because"
+    client_error "the remote script $OPENSHIFT_ORACLE_DB_SCRIPT_LOC returned"
+    client_error "an unexpected result"
+    client_error ""
+    exit 137
+fi
+
+env_dir="${OPENSHIFT_ORACLE_DIR}/env"
+
+set_env_var 'OPENSHIFT_ORACLE_DB_HOST' $db_host $env_dir
+set_env_var 'OPENSHIFT_ORACLE_DB_PORT' $db_port $env_dir
+set_env_var 'OPENSHIFT_ORACLE_DB_USERNAME' $db_username $env_dir
+set_env_var 'OPENSHIFT_ORACLE_DB_PASSWORD' $db_password $env_dir
+set_env_var 'OPENSHIFT_ORACLE_DB_SOCKET' $db_socket $env_dir
+set_env_var 'OPENSHIFT_ORACLE_DB_URL' $db_url $env_dir
+
+client_result ""
+client_result "A instance has successfully be configured on the Oracle Database. Please make note of these credentials:"
+client_result "1"
+client_result " $script_result"
+client_result " $result_array"
+client_result "        Username: $db_username"
+client_result "        Password: $db_password"
+client_result "   Database Name: $OPENSHIFT_APP_NAME"
+client_result ""
+client_result "   Connection URL: $db_url"
+client_result ""
+
+cart_props "connection_url=$db_url"
+cart_props "username=$db_username"
+cart_props "password=$db_password"
+cart_props "database_name=$OPENSHIFT_APP_NAME"
+
+echo ""
+echo "A instance has successfully be configured on the Oracle Database. Please make note of these credentials:"
+echo ""
+echo "        Username: $db_username"
+echo "        Password: $db_password"
+echo "   Database Name: $OPENSHIFT_APP_NAME"
+echo ""
+echo "   Connection URL: $db_url"
+echo ""
+
+echo "connection_url=$db_url"
+echo "username=$db_username"
+echo "password=$db_password"
+echo "database_name=$OPENSHIFT_APP_NAME"
