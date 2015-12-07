@@ -31,7 +31,7 @@ yum install -y sshpass
 3. Oracle Requirements/Remote Script
 ------------------------------------
 
-This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. script is called via a remote sshpass call
+This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. Script is called via a remote sshpass call. The script accepts username, password, and SID. It will then return success/fail@@host@@port@@Tenant_ID
 
 4. Cartridge Installation
 -------------------------
@@ -46,7 +46,7 @@ oo-admin-ctl-cartridge --activate -c import-node --obsolete
 oo-admin-broker-cache --clear && oo-admin-console-cache --clear
 ```
 
-You now need to set the environment variables on each Node. Modify as needed:
+You now need to set the environment variables on each Node. Please note that the script does expect the password variable value to be a base64 hash of the plaintext password. Modify as needed:
 ```
 echo "$(echo "Password123" |  base64)" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD
 echo "/OracleProvisioningScript.sh" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_LOC
@@ -54,3 +54,14 @@ echo "@@" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR
 echo "oraclescripthost.example.com" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST
 echo "scriptuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER
 ```
+
+C. GEAR CREATION
+================
+
+Creating a instance of this Oracle Confgiuration gear follows the same processes as any other Add-On cartridge save that a environment variable, OPENSHIFT_ORACLE_DB_SID, needs to be set for the application before the gear can be installed. This environment variable will be passed to the remote script that actually provisions the Oracle tenant and will be used to determine the SID. 
+
+```
+rhc env-set -a APP_NAME -n DOMAIN_NAME -e OPENSHIFT_ORACLE_DB_SID=MY_SID
+```
+
+Once this is set, you can add the add-on cartridge via the web-console or the RHC command line tools.
