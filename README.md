@@ -4,7 +4,7 @@ ose2-oracle-frb-cart
 A. Synopsis
 ===========
 
-TODO
+This cartridge provides the ability to call on a remote script that accepts basic Oracle Tenant information, creates a tenant with said information, and than returns to the cartridge some further basic information. The cartridge then sets a series of application level environment variables that will allow a data-source to be configured that can connect to the new Oracle tenant.
 
 B. Installation
 ===============
@@ -12,9 +12,14 @@ B. Installation
 1. Setup OSE Environment
 ------------------------
 
+Before the cartridge can be installed, a OSE2 environment must be provisioned; for details on this please consult the official Red Hat documentation. (https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html-single/Deployment_Guide/)
+
+2. Oracle Requirements/Remote Script
+------------------------------------
+
 TODO
 
-2. Cartridge Installation
+3. Cartridge Installation
 -------------------------
 The cartridge can be installed as any other  OSE cartridge.
 
