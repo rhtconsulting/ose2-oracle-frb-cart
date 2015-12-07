@@ -14,12 +14,15 @@ B. Installation
 
 Before the cartridge can be installed, a OSE2 environment must be provisioned; for details on this please consult the official Red Hat documentation. (https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html-single/Deployment_Guide/)
 
-2. Oracle Requirements/Remote Script
+2. Install sshpass Utility
+--------------------------
+
+3. Oracle Requirements/Remote Script
 ------------------------------------
 
-TODO
+This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. script is called via a remote sshpass call
 
-3. Cartridge Installation
+4. Cartridge Installation
 -------------------------
 The cartridge can be installed as any other  OSE cartridge.
 
