@@ -11,27 +11,31 @@ exit_code=$?
 
 if [ $exit_code -gt 0 ]; then
      client_error "The \"sshpass\" command line utility has not been installed on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD+x} ]; then
+elif [ -z ${OPENSHIFT_ORACLE_DB_SID} ] ; then
+     client_error "The environment variable OPENSHIFT_ORACLE_DB_SID is not set on host: $HOSTNAME"
+     client_error "Please refer to the official cartridge README."
+     exit 137
+elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD is not set on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC+x} ]; then
+elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_LOC is not set on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR+x} ]; then
+elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR is not set on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_HOST+x} ]; then
+elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_HOST} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_HOST is not set on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_USER+x} ]; then
+elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_USER} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_USER is not set on host: $HOSTNAME"
-     client_error "Please refer to the cartridge official README."
+     client_error "Please refer to the official cartridge README."
      exit 137
 fi
 
@@ -42,15 +46,10 @@ db_password=""
 db_socket=""
 db_url=""
 
-db_sid=$OPENSHIFT_APP_NAME
-
 db_username=$(generate_username)
 db_password=$(generate_password)
 
-#client_message "Running the remove Oracle Provisioning Script via SSH"
-#client_message "    sshpass -p [PASSWORD-REDACTED] ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST '/bin/bash '$OPENSHIFT_ORACLE_DB_SCRIPT_LOC"
-
-script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "/bin/bash $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username -p=$db_password -s=$db_sid")
+script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "/bin/bash $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username -p=$db_password -s=$OPENSHIFT_ORACLE_DB_SID")
 
 result_array=($(echo $script_result | awk 'BEGIN {FS="'$OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR'"} {for(i=1;i<=NF;i++)print $i}'))
 
