@@ -17,6 +17,17 @@ Before the cartridge can be installed, a OSE2 environment must be provisioned; f
 2. Install sshpass Utility
 --------------------------
 
+To provide the needed requirement that the SSH call use username/password rather than public-key exchange; the sshpass command needs to be installed. This is because the ssh command does not support silent username/password authentication as this cartridge would require. The sshpass tool is not avaliable from the official Red Hat repos, but can instead be downloaded from the Fedora EPEL repos. 
+
+Please refer to the official EPEL documentation for instructions on how to enable the repos: https://fedoraproject.org/wiki/EPEL
+
+```
+sudo yum install -y wget
+wget https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh epel-release-6-8.noarch.rpm
+yum install -y sshpass
+```
+
 3. Oracle Requirements/Remote Script
 ------------------------------------
 
