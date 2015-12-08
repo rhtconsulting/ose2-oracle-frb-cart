@@ -31,7 +31,7 @@ yum install -y sshpass
 3. Oracle Requirements/Remote Script
 ------------------------------------
 
-This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. Script is called via a remote sshpass call. The script accepts username, password, and SID. It will then return success/fail@@host@@port@@Tenant_ID
+This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. Script is called via a remote sshpass call. The script accepts username, password, and SID. It will then return **SUCCESS/FAIL@@host@@port@@Tenant_ID**
 
 4. Cartridge Installation
 -------------------------
@@ -55,11 +55,11 @@ echo "/OracleProvisioningScript.sh" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCR
 echo "@@" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR
 ```
 
-OPENSHIFT_ORACLE_DB_SCRIPT_HOST         : This is the hostname that the remote Oracle configuration script resides on.
-OPENSHIFT_ORACLE_DB_SCRIPT_USER         : This is the username that will be used to remotely call the configuration script via SSH on OPENSHIFT_ORACLE_DB_SCRIPT_HOST.
-OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD : This is the password for the OPENSHIFT_ORACLE_DB_SCRIPT_USER. It is expected that the password is in 64 bit hash.
-OPENSHIFT_ORACLE_DB_SCRIPT_LOC          : This is the location on OPENSHIFT_ORACLE_DB_SCRIPT_HOST where the remote configuration script resides.
-OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR  : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '@@'
+* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**         : This is the hostname that the remote Oracle configuration script resides on.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_USER**         : This is the username that will be used to remotely call the configuration script via SSH on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD** : This is the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_USER**. It is expected that the password is in 64 bit hash.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**          : This is the location on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** where the remote configuration script resides.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR**  : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '@@'
 
 
 
