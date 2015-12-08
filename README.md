@@ -48,12 +48,20 @@ oo-admin-broker-cache --clear && oo-admin-console-cache --clear
 
 You now need to set the environment variables on each Node. Please note that the script does expect the password variable value to be a base64 hash of the plaintext password. Modify as needed:
 ```
+echo "oraclescripthost.example.com" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST
+echo "scriptuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER
 echo "$(echo "Password123" |  base64)" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD
 echo "/OracleProvisioningScript.sh" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_LOC
 echo "@@" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR
-echo "oraclescripthost.example.com" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST
-echo "scriptuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER
 ```
+
+OPENSHIFT_ORACLE_DB_SCRIPT_HOST         : This is the hostname that the remote Oracle configuration script resides on.
+OPENSHIFT_ORACLE_DB_SCRIPT_USER         : This is the username that will be used to remotely call the configuration script via SSH on OPENSHIFT_ORACLE_DB_SCRIPT_HOST.
+OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD : This is the password for the OPENSHIFT_ORACLE_DB_SCRIPT_USER. It is expected that the password is in 64 bit hash.
+OPENSHIFT_ORACLE_DB_SCRIPT_LOC          : This is the location on OPENSHIFT_ORACLE_DB_SCRIPT_HOST where the remote configuration script resides.
+OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR  : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '@@'
+
+
 
 C. GEAR CREATION
 ================
