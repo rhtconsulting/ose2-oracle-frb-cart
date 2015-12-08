@@ -61,7 +61,7 @@ C. GEAR CREATION
 Creating a instance of this Oracle Confgiuration gear follows the same processes as any other Add-On cartridge save that a environment variable, OPENSHIFT_ORACLE_DB_SID, needs to be set for the application before the gear can be installed. This environment variable will be passed to the remote script that actually provisions the Oracle tenant and will be used to determine the SID. 
 
 ```
-rhc env-set -a APP_NAME -n DOMAIN_NAME -e OPENSHIFT_ORACLE_DB_SID=MY_SID
+rhc app-create myapplication jbossews-2.0 redhat_consulting-oracle-12.0 OPENSHIFT_ORACLE_DB_SID=MY_SID --namespace domain --gear-size small --scaling
 ```
 
 Once this is set, you can add the add-on cartridge via the web-console or the RHC command line tools.

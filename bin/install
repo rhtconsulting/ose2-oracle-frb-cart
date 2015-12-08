@@ -19,7 +19,7 @@ elif [ -z ${OPENSHIFT_ORACLE_DB_SID} ] ; then
      exit 137
 elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD is not set on host: $HOSTNAME"
-     client_error "Please refer to the official cartridge README."
+     client_error "Please refer to the official cartridge README." 
      exit 137
 elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_LOC is not set on host: $HOSTNAME"
@@ -90,7 +90,6 @@ set_env_var 'OPENSHIFT_ORACLE_DB_REMOTE_HOST' $db_host $env_dir
 set_env_var 'OPENSHIFT_ORACLE_DB_REMOTE_PORT' $db_port $env_dir
 set_env_var 'OPENSHIFT_ORACLE_DB_USERNAME' $db_username $env_dir
 set_env_var 'OPENSHIFT_ORACLE_DB_PASSWORD' $db_password $env_dir
-set_env_var 'OPENSHIFT_ORACLE_DB_SID' $db_sid $env_dir
 set_env_var 'OPENSHIFT_ORACLE_DB_TENANT_ID' $db_tenant_id $env_dir
 set_env_var 'OPENSHIFT_ORACLE_DB_URL' $db_url $env_dir
 
@@ -99,7 +98,8 @@ client_result "A instance has successfully be configured on the Oracle Database.
 client_result ""
 client_result "        Username: $db_username"
 client_result "        Password: $db_password"
-client_result "   Database Name: $db_sid"
+client_result "       Tenant ID: $db_tenant_id"
+client_result "             SID: $OPENSHIFT_ORACLE_DB_SID"
 client_result ""
 client_result "   Connection URL: $db_url"
 client_result ""
@@ -107,4 +107,4 @@ client_result ""
 cart_props "connection_url=$db_url"
 cart_props "username=$db_username"
 cart_props "password=$db_password"
-cart_props "database_sid=$db_sid"
+cart_props "database_sid=$OPENSHIFT_ORACLE_DB_SID"

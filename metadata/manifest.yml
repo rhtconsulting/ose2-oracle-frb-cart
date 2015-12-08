@@ -1,14 +1,14 @@
+---
 Name: oracle
 Cartridge-Short-Name: ORACLE
 Architecture: noarch
-Display-Name: Oracle Database
+Display-Name: Oracle 12 Database Datasource
 Description: This Cartridge provides the ability to create a instance on a external Oracle Database
-Version: '1.0'
-Versions:
-- '1.0'
+Version: '12.0'
 Cartridge-Version: 1.0.0
 Compatible-Versions: []
 Cartridge-Vendor: frb
+License: GPL
 Categories:
 - service
 - database
@@ -23,9 +23,9 @@ Cart-Data:
 - Key: password
   Type: cart_data
   Description: Credentials to be used to connect to Oracle DB
-- Key: database_name
+- Key: database_sid
   Type: cart_data
-  Description: Oracle DB Name
+  Description: Oracle DB SID
 - Key: connection_url
   Type: cart_data
   Description: Oracle DB connection URL
