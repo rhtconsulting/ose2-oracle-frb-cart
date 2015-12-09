@@ -49,7 +49,9 @@ db_url=""
 db_username=$(generate_username)
 db_password=$(generate_password)
 
-script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "/bin/bash $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username -p=$db_password -s=$OPENSHIFT_ORACLE_DB_SID")
+script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "$OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op create -user $db_username -password $db_password -pdb $OPENSHIFT_ORACLE_DB_SID -nobase64")
+
+#script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "/bin/bash $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username -p=$db_password -s=$OPENSHIFT_ORACLE_DB_SID")
 
 result_array=($(echo $script_result | awk 'BEGIN {FS="'$OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR'"} {for(i=1;i<=NF;i++)print $i}'))
 
