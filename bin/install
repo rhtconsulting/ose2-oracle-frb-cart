@@ -84,7 +84,7 @@ if [ "$script_result_status" != "SUCCESS" ]; then
     exit 137
 fi
 
-db_url="sql://$db_username:$db_password@$db_host:$db_port"
+db_url="jdbc:oracle:thin:$db_username/$db_password@$db_host:$db_port/$db_tenant_id"
 
 env_dir="${OPENSHIFT_ORACLE_DIR}/env"
 
