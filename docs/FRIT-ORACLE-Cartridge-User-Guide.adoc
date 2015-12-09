@@ -22,23 +22,18 @@ endif::[]
 
 The purpose of this document is to present how OpenShift 2 users can interact with the Oracle OpenShift Enterprise V2.2 cartridge.
 
-The end result of their OpenShift 2 WebSphere gear provisioning would be a series of environment variables being set that will allow a jdbc datasource to connect.
+The end result of their OpenShift 2 Oracle gear provisioning would be a series of environment variables being set that will allow a jdbc datasource to connect.
 
-== OpenShift 2 WebSphere Gear Creation
+== OpenShift 2 Oracle Gear Creation
 
-There are two ways to create a WebSphere gear in OpenShift 2:
+There are two ways to create a gear in OpenShift 2:
 
 1. Via the OpenShift Client Tools
 2. Via the OpenShift Console
 
 Due to the complication of setting a application environment variable, this document will only outline how to the the client tools.
 
-=== Creating WebSphere Application with OpenShift Red Hat Client Tools
-
-The second mechanism by why a WebSphere application may be created is via the OpenShift Red Hat client tools that could be installed
-on your computer. The commands below assume that a domain space *test* has already been created.
-
-====  Creating WebSphere Application without a Database Add-On
+=== Creating a Application with OpenShift Red Hat Client Tools
 
 Creating an instance of this Oracle Configuration Cartridge follows a similar processes as any other Add-On cartridge save the fact that a environment variable, OPENSHIFT_ORACLE_DB_SID, needs to be set for the application. This environment variable will be passed to the remote script that actually provisions the Oracle tenant and will be used to determine the Oracle SID. Below is an example in which a jbossews-2.0 application is created with the Oracle Configuration Add-On.
 
