@@ -14,26 +14,12 @@ B. Installation
 
 Before the cartridge can be installed, a OSE2 environment must be provisioned; for details on this please consult the official Red Hat documentation. (https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/2/html-single/Deployment_Guide/)
 
-2. Install sshpass Utility
---------------------------
-
-To provide the needed requirement that the SSH call use username/password rather than public-key exchange; the sshpass command needs to be installed. This is because the ssh command does not support silent username/password authentication as this cartridge would require. The sshpass tool is not avaliable from the official Red Hat repos, but can instead be downloaded from the Fedora EPEL repos. 
-
-Please refer to the official EPEL documentation for instructions on how to enable the repos: https://fedoraproject.org/wiki/EPEL
-
-```
-sudo yum install -y wget
-wget https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -Uvh epel-release-6-8.noarch.rpm
-yum install -y sshpass
-```
-
-3. Oracle Requirements/Remote Script
+2. Oracle Requirements/Remote Script
 ------------------------------------
 
 This cartridge is in and of itself not responsible for configuring a remote tenant, instead that responsibility lies to a script that resides on a remote host that will be called by the install script when the gear is instantiated. Script is called via a remote sshpass call. The script accepts username, password, and SID. It will then return **SUCCESS/FAIL@@HOST@@PORT@@TENNANT_ID**
 
-4. Cartridge Installation
+3. Cartridge Installation
 -------------------------
 The cartridge can be installed as any other  OSE cartridge.
 
