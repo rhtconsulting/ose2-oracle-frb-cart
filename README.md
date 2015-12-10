@@ -68,7 +68,7 @@ echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa.pub" > /etc/
 Now use the following command to create the needed SSH keys and exhange them with **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
 
 ```
-rm -rf $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) && ssh-keygen -t rsa -f $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) -N "" -q && ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'mkdir -p .ssh; chmod 700 .ssh' && cat $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC) | ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'cat >> .ssh/authorized_keys; chmod 600 .ssh/authorized_keys'
+rm -rf $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) && ssh-keygen -t rsa -f $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) -N "" -q && ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'mkdir -p .ssh; chmod 700 .ssh' && cat $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC) | ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'cat >> .ssh/authorized_keys; chmod 600 .ssh/authorized_keys' && chmod 755 $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) && chmod 755 $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC)
 ```
 
 

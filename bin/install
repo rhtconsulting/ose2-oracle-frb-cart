@@ -6,20 +6,17 @@
 #echo ''
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
-command -v sshpass >/dev/null 2>&1
-exit_code=$?
-
-if [ $exit_code -gt 0 ]; then
-     client_error "The \"sshpass\" command line utility has not been installed on host: $HOSTNAME"
-     client_error "Please refer to the official cartridge README."
-     exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SID} ] ; then
+if [ -z ${OPENSHIFT_ORACLE_DB_SID} ] ; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SID is not set on host: $HOSTNAME"
      client_error "Please refer to the official cartridge README."
      exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD} ]; then
-     client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD is not set on host: $HOSTNAME"
-     client_error "Please refer to the official cartridge README." 
+elif [ -z ${OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE} ]; then
+     client_error "The environment variable OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE is not set on host: $HOSTNAME"
+     client_error "Please refer to the official cartridge README."
+     exit 137
+elif [ -z ${OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC} ]; then
+     client_error "The environment variable OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC is not set on host: $HOSTNAME"
+     client_error "Please refer to the official cartridge README."
      exit 137
 elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_LOC is not set on host: $HOSTNAME"
@@ -49,9 +46,7 @@ db_url=""
 db_username=$(generate_username)
 db_password=$(generate_password)
 
-script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "$OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op create -user $db_username -password $db_password -pdb $OPENSHIFT_ORACLE_DB_SID -nobase64")
-
-#script_result=$(sshpass -p $(echo $OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD | base64 -d) ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "/bin/bash $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username -p=$db_password -s=$OPENSHIFT_ORACLE_DB_SID")
+script_result=$(ssh -i $OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_USER@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "$OPENSHIFT_ORACLE_DB_SCRIPT_LOC -u=$db_username --password=$db_password -s=$OPENSHIFT_ORACLE_DB_SID")
 
 result_array=($(echo $script_result | awk 'BEGIN {FS="'$OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR'"} {for(i=1;i<=NF;i++)print $i}'))
 
