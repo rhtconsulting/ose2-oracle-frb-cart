@@ -53,14 +53,17 @@ echo "scriptuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER
 echo "$(echo "Password123" |  base64)" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD
 echo "/OracleProvisioningScript.sh" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_LOC
 echo "@@" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR
+echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE
+echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa.pub" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC
 ```
 
-* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**         : This is the hostname that the remote Oracle configuration script resides on.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_USER**         : This is the username that will be used to remotely call the configuration script via SSH on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD** : This is the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_USER**. It is expected that the password is in 64 bit hash.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**          : This is the location on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** where the remote configuration script resides.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR**  : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '**@@**'
-
+* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**          : This is the hostname that the remote Oracle configuration script resides on.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_USER**          : This is the username that will be used to remotely call the configuration script via SSH on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD**  : This is the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_USER**. It is expected that the password is in 64 bit hash.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**           : This is the location on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** where the remote configuration script resides.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR**   : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '**@@**'
+* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE** : This points to the location on the filesystem where the private ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
+* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC**  : This points to the location on the filesystem where the public ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
 
 
 C. GEAR CREATION
