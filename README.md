@@ -49,6 +49,11 @@ echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa.pub" > /etc/
 * **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE**        : This points to the location on the filesystem where the private ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
 * **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC**         : This points to the location on the filesystem where the public ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
 
+Once the environment variables have been set, run the following to apply the appropriate file permissions
+```
+chmod 644 /etc/openshift/env/OPENSHIFT_ORACLE_S*
+```
+
 Now use the following command to create the needed SSH keys and exhange them with **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**. You will be asked twice to enter in the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT** on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
 
 ```
