@@ -23,41 +23,43 @@ This cartridge is in and of itself not responsible for configuring a remote tena
 -------------------------
 The cartridge can be installed as any other  OSE cartridge.
 
-On each OpenShift Node execute the following commands:
+On each OpenShift Node you intend to install the cartridge execute the following commands:
 ```
 cd /usr/libexec/openshift/cartridges
 git clone https://github.com/rhtconsulting/ose2-oracle-frb-cart.git
 oo-admin-cartridge --action install --recursive --source /usr/libexec/openshift/cartridges
-oo-admin-ctl-cartridge --activate -c import-node --obsolete
-oo-admin-broker-cache --clear && oo-admin-console-cache --clear
 ```
 
 You now need to set the environment variables on each Node. Please note that the script does expect the password variable value to be a base64 hash of the plaintext password. Modify as needed:
 ```
 echo "oraclescripthost.example.com" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST
+echo "serviceaccountuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT
 echo "scriptuser" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER
-echo "$(echo "Password123" |  base64)" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD
 echo "/OracleProvisioningScript.sh" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_LOC
 echo "@@" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR
 echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE
 echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa.pub" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC
 ```
 
-* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**          : This is the hostname that the remote Oracle configuration script resides on.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_USER**          : This is the username that will be used to remotely call the configuration script via SSH on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_ENC_PASSWORD**  : This is the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_USER**. It is expected that the password is in 64 bit hash.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**           : This is the location on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** where the remote configuration script resides.
-* **OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR**   : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '**@@**'
-* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE** : This points to the location on the filesystem where the private ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
-* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC**  : This points to the location on the filesystem where the public ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**                 : This is the hostname that the remote Oracle configuration script resides on.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT** : This is the service account user name that will be used for the ssh call to the **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_USER**                 : This is the user that the **OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT** will sudo to to run the **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**                  : This is the location on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** where the remote configuration script resides.
+* **OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR**          : This is the deliminator used in the return value coming from the remote configuration script. This should be set to '**@@**'
+* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE**        : This points to the location on the filesystem where the private ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
+* **OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC**         : This points to the location on the filesystem where the public ssh key that will be used to call the script on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST** will reside.
 
-Now use the following command to create the needed SSH keys and exhange them with **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
+Now use the following command to create the needed SSH keys and exhange them with **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**. You will be asked twice to enter in the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT** on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.
 
 ```
 rm -rf $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) && ssh-keygen -t rsa -f $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) -N "" -q && ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'mkdir -p .ssh; chmod 700 .ssh' && cat $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC) | ssh $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_USER)@$(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SCRIPT_HOST) 'cat >> .ssh/authorized_keys; chmod 600 .ssh/authorized_keys' && chmod 755 $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE) && chmod 755 $(cat /etc/openshift/env/OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PUBLIC)
 ```
 
+On the broker, run the following command to import the newly added cartridge, and clear the broker registry cache and console cache.
 
+```
+oo-admin-ctl-cartridge --activate -c import-node --obsolete && oo-admin-broker-cache --clear && oo-admin-console-cache --clear
+```
 
 C. GEAR CREATION
 ================
