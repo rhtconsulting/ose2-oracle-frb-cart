@@ -52,7 +52,7 @@ echo "/usr/libexec/openshift/cartridges/ose2-oracle-frb-cart/id_rsa.pub" > /etc/
 **Optional variable**
 If on the deletion of the Oracle Database Datasource Gear you want the back end tenent PDB to remain in place, set the following optional variable, otherwise the tenent PDB will be deleted on gear teardown by a call to the **OPENSHIFT_ORACLE_DB_SCRIPT_LOC**.
 ```
-echo "true" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_PRESEVE_ON_DELETE
+echo "true" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_PRESERVE_ON_TEARDOWN
 ```
 
 Once the environment variables have been set, run the following to apply the appropriate file permissions
