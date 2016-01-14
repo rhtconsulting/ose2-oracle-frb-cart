@@ -1,16 +1,7 @@
 #!/bin/bash
-#echo ''
-#echo '######################################################################'
-#echo '# INSTALL                                                            #'
-#echo '######################################################################'
-#echo ''
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
-if [ $exit_code -gt 0 ]; then
-     client_error "The \"sshpass\" command line utility has not been installed on host: $HOSTNAME"
-     client_error "Please refer to the official cartridge README."
-     exit 137
-elif [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC} ]; then
+if [ -z ${OPENSHIFT_ORACLE_DB_SCRIPT_LOC} ]; then
      client_error "The environment variable OPENSHIFT_ORACLE_DB_SCRIPT_LOC is not set on host: $HOSTNAME"
      client_error "Please refer to the official cartridge README."
      exit 137
