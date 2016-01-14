@@ -6,9 +6,6 @@
 #echo ''
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
-command -v sshpass >/dev/null 2>&1
-exit_code=$?
-
 if [ $exit_code -gt 0 ]; then
      client_error "The \"sshpass\" command line utility has not been installed on host: $HOSTNAME"
      client_error "Please refer to the official cartridge README."
