@@ -42,6 +42,11 @@ fi
 if [ "${OPENSHIFT_ORACLE_DB_PRESEVE_ON_DELETE}" != true ]; then
      client_message "Deleting the oracle pdb via the remote script"
      script_result=$(ssh -i $OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "sudo -u oracle $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op delete -user $OPENSHIFT_ORACLE_DB_USERNAME -pass $OPENSHIFT_ORACLE_DB_PASSWORD -nobase64 -host $OPENSHIFT_ORACLE_DB_REMOTE_HOST -port $OPENSHIFT_ORACLE_DB_REMOTE_PORT -pdb $OPENSHIFT_ORACLE_DB_TENANT_ID")
+     if [ $script_result = "SUCCESS" ]; then
+          client_message "Deletion worked successfully"
+     else
+          client_message "Deletion failed with result $script_result"
+     fi
 else
      client_message "OPENSHIFT_ORACLE_DB_PRESEVE_ON_DELETE set to true on host $HOSTNAME, presering pdb on database"
 fi
