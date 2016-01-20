@@ -57,7 +57,7 @@ echo "true" > /etc/openshift/env/OPENSHIFT_ORACLE_DB_PRESERVE_ON_TEARDOWN
 
 Once the environment variables have been set, run the following to apply the appropriate file permissions
 ```
-chmod 644 /etc/openshift/env/OPENSHIFT_ORACLE_S*
+chmod 644 /etc/openshift/env/OPENSHIFT_ORACLE_DB_**
 ```
 
 Now use the following command to create the needed SSH keys and exhange them with **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**. You will be asked twice to enter in the password for the **OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT** on **OPENSHIFT_ORACLE_DB_SCRIPT_HOST**.

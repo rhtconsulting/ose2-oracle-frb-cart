@@ -20,67 +20,85 @@ endif::[]
 
 == Synopsis
 
-The purpose of this document is to present how OpenShift 2 users can interact with the Oracle OpenShift Enterprise V2.2 cartridge.
+The purpose of this document is to present how OpenShift 2 users can interact with the Oracle OpenShift Enterprise V2.2 add-on cartridge.
 
-The end result of their OpenShift 2 Oracle gear provisioning would be a series of environment variables being set that will allow a jdbc datasource to connect.
+The end result of their OpenShift 2 Oracle gear provisioning would be a series of environment variables being set that will allow a JDBC datasource to connect to the newly provisioned remote Oracle Database Tenant.
 
-== OpenShift 2 Oracle Gear Creation
+== OpenShift 2 Oracle Add-On Gear Creation
 
 There are two ways to create a gear in OpenShift 2:
 
 1. Via the OpenShift Client Tools
 2. Via the OpenShift Console
 
-Due to the complication of setting a application environment variable, this document will only outline how to the the client tools.
+=== Creating a Application with the OpenShift Red Hat Client Tools
 
-=== Creating a Application with OpenShift Red Hat Client Tools
-
-Creating an instance of this Oracle Configuration Cartridge follows a similar processes as any other Add-On cartridge save the fact that a environment variable, OPENSHIFT_ORACLE_DB_SID, needs to be set for the application. This environment variable will be passed to the remote script that actually provisions the Oracle tenant and will be used to determine the Oracle SID. Below is an example in which a jbossews-2.0 application is created with the Oracle Configuration Add-On.
+Creating an instance of this Oracle Configuration Cartridge follows a similar processes as any other Add-On cartridge. Simply add the *"-t frb-oracle-12.0"* cartridge after the normal call to create a application. Below is an example in which a WebSphere based application is created with the Oracle Configuration Add-On Cartridge.
 
 ```
-[ose@node01 ~]$ rhc app-create myapplication jbossews-2.0 frb-oracle-12.0 OPENSHIFT_ORACLE_DB_SID=mySid --namespace domain --gear-size small --scaling
+rhc app create -a myapp  -n mynamespace -t frb-websphere-8.5 -t frb-oracle-12.0
 Application Options
 -------------------
-Domain:                domain
-Cartridges:            jbossews-2.0, frb-oracle-12.0
-Gear Size:             small
-Scaling:               yes
-Environment Variables: OPENSHIFT_ORACLE_DB_SID=MY_SID
+Domain:     mynamespace
+Cartridges: frb-websphere-8.5, frb-oracle-12.0
+Gear Size:  default
+Scaling:    no
 
-Creating application 'myapplication4' ... done
+Creating application 'testkjf01' ... done
 
   A instance has successfully be configured on the Oracle Database. Please make note of these credentials:
 
-SUCCESS@@127.0.0.1@@1521@@MY_SID
-        Username: adminvW4Vczp
-        Password: Xk4aCM7N_2ah
-       Tenant ID: MY_SID
-             SID: MY_SID
-
-   Connection URL: sql://adminvW4Vczp:Xk4aCM7N_2ah@127.0.0.1:1521
-
-Waiting for your DNS name to be available ... done
-
-Initialized empty Git repository in /home/cloud-user/myapplication4/.git/
-The authenticity of host 'myapplication-domain.example.com (172.16.15.37)' can't be established.
-RSA key fingerprint is 71:5a:05:c4:40:bf:cd:4a:7a:10:82:f0:57:de:44:85.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'myapplication-domain.example.com' (RSA) to the list of known hosts.
-
-Your application 'myapplication' is now available.
-
-  URL:        http://myapplication-domain.example.com/
-  SSH to:     56685bedd802bc793e00051e@myapplication-domain.example.com
-  Git remote: ssh://56685bedd802bc793e00051e@myapplication-domain.example.com/~/git/myapplication4.git/
-  Cloned to:  /home/cloud-user/myapplication
-
-Run 'rhc show-app myapplication4' for more details about your app.
+   Script Result: SUCCESS@@oraclesrvr001@@1521@@tcdb_001
+        Username: adminin5LXMY
+        Password: 5XHV5JB2XteQ
+       Tenant ID: tcdb_001
 ```
 
-Once the provisioning has completed, the following environment variables can be used in your datasource configuration to point to the newly provisioned Oracle Database tenant.
+=== Adding a Add-On Cartridge via the OpenShift Web Console
 
-*OPENSHIFT_ORACLE_DB_REMOTE_PORT +
-OPENSHIFT_ORACLE_DB_USERNAME +
-OPENSHIFT_ORACLE_DB_PASSWORD +
-OPENSHIFT_ORACLE_DB_TENANT_ID +
-OPENSHIFT_ORACLE_DB_URL*
+The steps to create a Oracle Add-On gear to a pre-existing application via the OpenShift console are very straightforward:
+
+[NOTE]
+====================================================================
+*This step assumes that the user has already created a namespace, a application has already been created, and has setup their public key in his OpenShift account.*
+====================================================================
+
+==== Select on Application
+
+Select the pre-existing application.
+
+[[img-console-applications]]
+image::../usr/doc/applications.png[caption="Figure 1: ", title="OpenShift Applications Page"]
+
+==== Select Oracle Add On Cartridge
+
+In the application page, select the *"Add Oracle 12 Database Datasource"* database add-on cartridge.
+
+[[img-console-application-details]]
+image::../usr/doc/oracle_database.png[caption="Figure 2: ", title="OpenShift Application Detail Page"]
+
+==== Add Oracle Add-On Cartridge
+
+Confirm the selection to add the *"Add Oracle 12 Database Datasource"* database add-on cartridge.
+
+[[img-console-oracle]]
+image::../usr/doc/add_cartridge.png[caption="Figure 3: ", title="OpenShift Oracle Add Cartridge Page"]
+
+==== Oracle Add-On Cartridge Confirmation
+
+The page will then display that OpenShift is working to add the cartridge, in several minutes you should be redirected to the next page. This page will display the connection details returned by the remotely called oracle provisioning script.
+
+[[img-console-oracle-confirmation]]
+image::../usr/doc/confirmation.png[caption="Figure 4: ", title="OpenShift Oracle Add Cartridge Confirmation Page"]
+
+== Using the Provisioned Oracle Database
+
+Once the Oracle Gear completes installation, the gear sets a series of environment variables that can then be used by the web gears to connect to the newly provisioned Oracle tenant instance.
+
+```
+OPENSHIFT_ORACLE_DB_REMOTE_HOST
+OPENSHIFT_ORACLE_DB_REMOTE_PORT
+OPENSHIFT_ORACLE_DB_USERNAME
+OPENSHIFT_ORACLE_DB_PASSWORD
+OPENSHIFT_ORACLE_DB_TENANT_ID
+```
