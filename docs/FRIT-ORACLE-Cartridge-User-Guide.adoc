@@ -93,6 +93,11 @@ image::../usr/doc/confirmation.png[caption="Figure 4: ", title="OpenShift Oracle
 
 == Using the Provisioned Oracle Database
 
+[NOTE]
+====================================================================
+*The following does not work for WebSphere, as WebSphere does not support variable substitution. The datasource will need to be added with hard coded values through the WebSphere console.*
+====================================================================
+
 Once the Oracle Gear completes installation, the gear sets a series of environment variables that can then be used by the web gears to connect to the newly provisioned Oracle tenant instance.
 
 ```
@@ -102,3 +107,5 @@ OPENSHIFT_ORACLE_DB_USERNAME
 OPENSHIFT_ORACLE_DB_PASSWORD
 OPENSHIFT_ORACLE_DB_TENANT_ID
 ```
+
+There environment variables can then be used in the JBoss EAP or EWS configuration to point to the datasource.
