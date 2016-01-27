@@ -30,8 +30,56 @@ db_password=""
 db_socket=""
 db_url=""
 
+RETURNVAL=""
+db_passwordBannedWords=(welcome database account user password oracle computer abcd)
+db_passwordLength=18
+db_passwordNumberString='0123456789'
+db_passwordPunctuationString='!@%^<>|[]{}()*~;:.,/\'
+db_passwordLowercaseString='abcdefghijklmnopqrstuvwxyz'
+db_passwordUppercaseString='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+
+oseCharFromString () {
+    RETURNVAL=${1:RANDOM%${#1}:1};
+}
+
+generateDBPassword () {
+    randomlyChooseCharFromString $db_passwordPunctuationString
+    passwordTmp=$RETURNVAL
+    randomlyChooseCharFromString $db_passwordNumberString
+    passwordTmp=$passwordTmp$RETURNVAL
+    randomlyChooseCharFromString $db_passwordLowercaseString
+    passwordTmp=$passwordTmp$RETURNVAL
+    randomlyChooseCharFromString $db_passwordUppercaseString
+    passwordTmp=$passwordTmp$RETURNVAL
+    for ((i=1; i<=$(($db_passwordLength-4)); i++))
+    do
+        randomlyChooseCharFromString $db_passwordNumberString$db_passwordPunctuationString$db_passwordLowercaseString$db_passwordUppercaseString
+        passwordTmp=$passwordTmp$RETURNVAL
+    done
+    passwordTmp=$(echo $passwordTmp | sed 's/./&\n/g' | shuf | tr -d "\n")
+    RETURNVAL=$passwordTmp
+}
+
+generateAndValidateDBPassword () {
+    generateDBPassword
+    passwordTmpValidate=$RETURNVAL
+    passwordLower=$(echo $passwordTmpValidate | tr '[:upper:]' '[:lower:]')
+    for i in ${db_passwordBannedWords[@]}; do
+        if [ "${passwordLower/$i}" != "$passwordLower" ]; then
+             generateAndValidateDBPassword
+             break
+        fi
+    done
+    RETURNVAL=$passwordTmpValidate
+}
+
+generateAndValidateDBPassword
+db_password=$RETURNVAL
+
+
 db_username=$(generate_username)
-db_password=$(generate_password)
+#db_password=$(generate_password)
 
 script_result=$(ssh -i $OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "sudo -u oracle $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op create -user $db_username -pass $db_password -nobase64")
 
