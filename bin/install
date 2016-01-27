@@ -81,7 +81,7 @@ db_password=$RETURNVAL
 db_username=$(generate_username)
 #db_password=$(generate_password)
 
-script_result=$(ssh -i $OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "sudo -u oracle $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op create -user $db_username -pass $db_password -nobase64")
+script_result=$(ssh -i $OPENSHIFT_ORACLE_DB_SSH_IDENTITY_PRIVATE -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $OPENSHIFT_ORACLE_DB_SCRIPT_HOST_SERVICE_ACCOUNT@$OPENSHIFT_ORACLE_DB_SCRIPT_HOST "sudo -u oracle $OPENSHIFT_ORACLE_DB_SCRIPT_LOC -op create -user \"$db_username\" -pass \"$db_password\" -nobase64")
 
 result_array=($(echo $script_result | awk 'BEGIN {FS="'$OPENSHIFT_ORACLE_DB_SCRIPT_DELIMINATOR'"} {for(i=1;i<=NF;i++)print $i}'))
 
