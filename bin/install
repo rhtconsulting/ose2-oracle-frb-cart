@@ -39,7 +39,7 @@ db_passwordLowercaseString='abcdefghijklmnopqrstuvwxyz'
 db_passwordUppercaseString='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 
-oseCharFromString () {
+randomlyChooseCharFromString () {
     RETURNVAL=${1:RANDOM%${#1}:1};
 }
 
