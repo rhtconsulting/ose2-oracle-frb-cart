@@ -1,0 +1,66 @@
+= {subject}: PREPARED FOR - {customer}
+:subject: Oracle Cartridge EWS 2.0 Datasource Configuration Guide
+:description: Oracle OpenShift 2 Cartridge EWS 2.0 Datasource Configuration
+:doctype: book
+:confidentiality: Confidential
+:customer:  FRIT
+:listing-caption: Listing
+:toc:
+:toclevels: 6
+:sectnums:
+:chapter-label:
+:icons: font
+ifdef::backend-pdf[]
+:pdf-page-size: A4
+:title-page-background-image: image:../usr/doc/header.jpeg[pdfwidth=8.0in,align=center]
+:pygments-style: tango
+//:source-highlighter: pygments
+:source-highlighter: coderay
+endif::[]
+
+== Synopsis
+
+The purpose of this document is to present the changes required to the Red Hat JBoss Enterprise Web Server (EWS) 2.0 OpenShift cartridge to add a datasource that can connect to the newly Provisioned Oracle DB Tenant provided via the Oracle Cartridge.
+
+== Install Driver on to Node Server
+
+It is assumed that you already have the correct ojdbc6.jar driver file that provides 'javax.sql.DataSource' retrieved from either your database team, or the Oracle website.
+
+First place the JDBC driver jar (ojdbc6.jar) in to the same directory where OSE places drivers by default, '/usr/share/java'
+```
+mv ojdbc6.jar /usr/share/java/
+```
+
+Make sure all users can read the jar file
+```
+chmod 644 /usr/share/java/ojdbc6.jar
+```
+
+Make a logical symbolic link to the driver file in directory used as the EWS lib directory
+```
+ls -s /usr/share/java/ojdbc6.jar /usr/share/java/tomcat7/ojdbc6.jar
+```
+
+== Changes to Configuration
+
+To allow the application to use the datasource, add the following section to the context.xml file template proceeding the MySQLDS resource
+```
+<Resource name="jdbc/OracleDS"
+          url="jdbc:oracle:thin:@//${OPENSHIFT_ORACLE_DB_REMOTE_HOST}:${OPENSHIFT_ORACLE_DB_REMOTE_PORT}/${OPENSHIFT_ORACLE_DB_TENANT_ID}"
+          driverClassName="oracle.jdbc.OracleDriver"
+          username="${OPENSHIFT_ORACLE_DB_USERNAME}"
+          password="${OPENSHIFT_ORACLE_DB_PASSWORD}"
+          auth="Container"
+          type="javax.sql.DataSource"
+          maxActive="20"
+          maxIdle="5"
+          maxWait="10000"
+          />
+```
+
+The environment variables defined in the resource will be replaced at runtim of the gear by values set by the Oracle Cartridge on gear creation.
+
+== Reference Information
+
+* https://github.com/rhtconsulting/ose2-oracle-frb-cart[OpenShift Oracle Cartridge]
+* https://access.redhat.com/solutions/93693[How to configure datasource settings in EAP 6]
