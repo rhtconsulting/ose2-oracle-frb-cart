@@ -30,16 +30,26 @@ The approach will be to first install the Oracle OJDBC6 driver as a module, add 
 
 It is assumed that you already have the correct ojdbc6.jar driver file retrieved from either your database team, or the Oracle website.
 
+.  Place the JDBC driver jar (ojdbc6.jar) in to '/usr/share/java'
+```
+mv ojdbc6.jar /usr/share/java/
+```
+[start=2]
+Make sure all users can read the jar file
+```
+chmod 644 /usr/share/java/ojdbc6.jar
+```
+[start=3]
 . Create a directory under $JBOSS_HOME/modules for the module to reside:
 ```
 mkdir -p $JBOSS_HOME/modules/com/oracle/jdbc/main
 ```
-[start=2]
-. Put the the JDBC driver jar (ojdbc6.jar) in this directory
+[start=4]
+. Make a logical symbolic link to the driver file
 ```
-cp ojdbc6.jar  $JBOSS_HOME/modules/com/oracle/jdbc/main
+ls -s /usr/share/java/ojdbc6.jar $JBOSS_HOME/modules/com/oracle/jdbc/main/ojdbc6.jar
 ```
-[start=3]
+[start=5]
 . Create a module configuration file $JBOSS_HOME/modules/com/oracle/jdbc/main/module.xml containing the following:
 ```
 <module xmlns="urn:jboss:module:1.1" name="com.oracle.jdbc">
@@ -51,6 +61,11 @@ cp ojdbc6.jar  $JBOSS_HOME/modules/com/oracle/jdbc/main
     <module name="javax.transaction.api"/>
   </dependencies>
 </module>
+```
+[start=6]
+Make sure all users can read the  odule
+```
+chmod 644 -R $JBOSS_HOME/modules/com/oracle/jdbc/main
 ```
 
 [NOTE]
