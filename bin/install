@@ -34,7 +34,7 @@ RETURNVAL=""
 db_passwordBannedWords=(welcome database account user password oracle computer abcd)
 db_passwordLength=18
 db_passwordNumberString='0123456789'
-db_passwordPunctuationString='!@%^<>|[]{}()*~;:.,/\'
+db_passwordPunctuationString='!@%^[]{}()*~;:.,'
 db_passwordLowercaseString='abcdefghijklmnopqrstuvwxyz'
 db_passwordUppercaseString='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
