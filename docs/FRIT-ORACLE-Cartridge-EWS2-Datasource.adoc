@@ -38,7 +38,7 @@ chmod 644 /usr/share/java/ojdbc6.jar
 
 Make a logical symbolic link to the driver file in directory used as the EWS lib directory
 ```
-ls -s /usr/share/java/ojdbc6.jar /usr/share/java/tomcat7/ojdbc6.jar
+ln -s /usr/share/java/ojdbc6.jar /usr/share/java/tomcat7/ojdbc6.jar
 ```
 
 == Changes to Configuration

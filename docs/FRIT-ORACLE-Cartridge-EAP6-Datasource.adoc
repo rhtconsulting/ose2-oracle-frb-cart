@@ -47,7 +47,7 @@ mkdir -p $JBOSS_HOME/modules/com/oracle/jdbc/main
 [start=4]
 . Make a logical symbolic link to the driver file
 ```
-ls -s /usr/share/java/ojdbc6.jar $JBOSS_HOME/modules/com/oracle/jdbc/main/ojdbc6.jar
+ln -s /usr/share/java/ojdbc6.jar $JBOSS_HOME/modules/com/oracle/jdbc/main/ojdbc6.jar
 ```
 [start=5]
 . Create a module configuration file $JBOSS_HOME/modules/com/oracle/jdbc/main/module.xml containing the following:
@@ -63,7 +63,7 @@ ls -s /usr/share/java/ojdbc6.jar $JBOSS_HOME/modules/com/oracle/jdbc/main/ojdbc6
 </module>
 ```
 [start=6]
-Make sure all users can read the  odule
+Make sure all users can read the module
 ```
 chmod 644 -R $JBOSS_HOME/modules/com/oracle/jdbc/main
 ```
@@ -76,9 +76,9 @@ Note that the jdbc driver jar must contain a META-INF/services/java.sql.Driver t
 
 == Modify standalone.xml
 
-You will need to modify the $JBOSS_HOME/config/standalone.xml file to add a Oracle driver and Datasource definition.
+You will need to modify the $CARTRIDGE_DIR/version/shared/standalone/configuration/standalone.xml file to add a Oracle driver and Datasource definition.
 
-Edit $JBOSS_HOME/config/standalone.xml file and add the following to make the newly created module available as a driver. This will need to be added within the enclosing '<drivers></drivers>' tags.
+Edit $CARTRIDGE_DIR/version/shared/standalone/configuration/config/standalone.xml file and add the following to make the newly created module available as a driver. This will need to be added within the enclosing '<drivers></drivers>' tags.
 
 ```
 <driver name="oracle" module="com.oracle.jdbc">
@@ -86,10 +86,10 @@ Edit $JBOSS_HOME/config/standalone.xml file and add the following to make the ne
 </driver>
 ```
 
-Edit $JBOSS_HOME/config/standalone.xml file and add the following datasource definition within the '<datasources></datasources>' tags, that makes use of environment variables set by the Oracle Cartridge to point to the newly provisioned Oracle Tenant DB.
+Edit $CARTRIDGE_DIR/version/shared/standalone/configuration/config/standalone.xml file and add the following datasource definition within the '<datasources></datasources>' tags, that makes use of environment variables set by the Oracle Cartridge to point to the newly provisioned Oracle Tenant DB.
 
 ```
-<datasource jndi-name="java:jboss/datasources/OracleDS" pool-name="OracleDS" enabled="false" use-java-context="true">
+<datasource jndi-name="java:jboss/datasources/OracleDS" pool-name="OracleDS" enabled="${oracle.enabled}" use-java-context="true">
     <connection-url>jdbc:oracle:thin:@//${env.OPENSHIFT_ORACLE_DB_REMOTE_HOST}:${env.OPENSHIFT_ORACLE_DB_REMOTE_PORT}/${env.OPENSHIFT_ORACLE_DB_TENANT_ID}</connection-url>
     <driver>oracle</driver>
     <pool>
@@ -121,7 +121,7 @@ The resulting datasources subsystem section should look similar to the below.
 ...
 <subsystem xmlns="urn:jboss:domain:datasources:1.1">
     <datasources>
-        <datasource jndi-name="java:jboss/datasources/OracleDS" pool-name="OracleDS" enabled="false" use-java-context="true">
+        <datasource jndi-name="java:jboss/datasources/OracleDS" pool-name="OracleDS" enabled="${oracle.enabled}" use-java-context="true">
             <connection-url>jdbc:oracle:thin:@//${env.OPENSHIFT_ORACLE_DB_REMOTE_HOST}:${env.OPENSHIFT_ORACLE_DB_REMOTE_PORT}/${env.OPENSHIFT_ORACLE_DB_TENANT_ID}</connection-url>
             <driver>oracle</driver>
             <pool>
@@ -179,6 +179,63 @@ The resulting datasources subsystem section should look similar to the below.
     </datasources>
 </subsystem>
 ...
+```
+
+== Modify standalone.conf
+
+You will need to modify the $CARTRIDGE_DIR/version/shared/bin/standalone.conf file to add logic to set '${mysql.enabled}'
+
+Edit $CARTRIDGE_DIR/version/shared/standalone/configuration/config/standalone.xml file and add the code below to set ORACLE_ENABLED after the section setting POSTGRESQL_ENABLED
+
+```
+ORACLE_ENABLED="false"
+if [ -n "$OPENSHIFT_ORACLE_DB_REMOTE_HOST" ]
+then
+    ORACLE_ENABLED="true"
+fi
+```
+The result should look like the below:
+
+```
+POSTGRESQL_ENABLED="false"
+if [ -n "$OPENSHIFT_POSTGRESQL_DB_URL" ]
+then
+    POSTGRESQL_ENABLED="true"
+fi
+
+ORACLE_ENABLED="false"
+if [ -n "$OPENSHIFT_ORACLE_DB_REMOTE_HOST" ]
+then
+    ORACLE_ENABLED="true"
+fi
+
+max_threads=$(ulimit -u)
+```
+
+Now replace the below sed section:
+```
+cat <<EOF > /tmp/sed_${systime}.sh
+sed -i -e "s/\\\${mysql.enabled}/$MYSQL_ENABLED/g" \
+       -e "s/\\\${postgresql.enabled}/$POSTGRESQL_ENABLED/g" \
+       -e "s/\\\${messaging.thread.pool.max.size}/$messaging_thread_pool_max_size/g" \
+       -e "s/\\\${messaging.scheduled.thread.pool.max.size}/$messaging_scheduled_thread_pool_max_size/g" \
+       -e "s/\\\${env.OPENSHIFT_INTERNAL_IP}/${OPENSHIFT_JBOSSEAP_IP}/g" \
+       ${sed_replace_env} \
+       ${CART_DIR}/standalone/configuration/standalone.xml > /dev/null 2>&1
+EOF
+```
+With:
+```
+cat <<EOF > /tmp/sed_${systime}.sh
+sed -i -e "s/\\\${oracle.enabled}/$ORACLE_ENABLED/g" \
+       -e "s/\\\${mysql.enabled}/$MYSQL_ENABLED/g" \
+       -e "s/\\\${postgresql.enabled}/$POSTGRESQL_ENABLED/g" \
+       -e "s/\\\${messaging.thread.pool.max.size}/$messaging_thread_pool_max_size/g" \
+       -e "s/\\\${messaging.scheduled.thread.pool.max.size}/$messaging_scheduled_thread_pool_max_size/g" \
+       -e "s/\\\${env.OPENSHIFT_INTERNAL_IP}/${OPENSHIFT_JBOSSEAP_IP}/g" \
+       ${sed_replace_env} \
+       ${CART_DIR}/standalone/configuration/standalone.xml > /dev/null 2>&1
+EOF
 ```
 
 == Reference Information
